@@ -1,6 +1,6 @@
 package set;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface Set<T> {
 
@@ -20,6 +20,6 @@ public interface Set<T> {
 
     void retainAll(Set<T> set);
 
-    ArrayList<T> setEntriesAsList();
+    List<T> setEntriesAsList();
 
 }
