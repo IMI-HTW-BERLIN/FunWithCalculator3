@@ -12,13 +12,13 @@ public interface Set<T> {
 
     void add(T element);
 
-    void addAll(Set<T> set);
+    Set combine(Set<T> set);
 
     void remove(T element);
 
-    void removeAll(Set<T> set);
+    Set subtract(Set<T> set);
 
-    void retainAll(Set<T> set);
+    Set intersect(Set<T> set);
 
     List<T> setEntriesAsList();
 

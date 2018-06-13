@@ -32,10 +32,19 @@ public class CustomSet<T> implements Set<T> {
     }
 
     @Override
-    public void addAll(Set<T> set) {
-        for (T element : set.setEntriesAsList()) {
-            add(element);
+    public Set combine(Set<T> set) {
+        Set<T> temp = null;
+        try {
+            temp = (Set<T>) this.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
         }
+
+        for (T element : set.setEntriesAsList()) {
+            temp.add(element);
+        }
+
+        return temp;
     }
 
     @Override
@@ -45,20 +54,31 @@ public class CustomSet<T> implements Set<T> {
     }
 
     @Override
-    public void removeAll(Set<T> set) {
-        for (T element : set.setEntriesAsList()) {
-            remove(element);
+    public Set subtract(Set<T> set) {
+        Set<T> temp = null;
+        try {
+            temp = (Set<T>) this.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
         }
+
+        for (T element : set.setEntriesAsList()) {
+            temp.remove(element);
+        }
+
+        return temp;
     }
 
     @Override
-    public void retainAll(Set<T> set) {
-        ArrayList<T> temp = new ArrayList<>();
+    public Set intersect(Set<T> set) {
+        Set<T> temp = new CustomSet<>();
+
         for (T element : set.setEntriesAsList()) {
             if (contains(element))
                 temp.add(element);
         }
-        setList = temp;
+
+        return temp;
     }
 
     @Override
