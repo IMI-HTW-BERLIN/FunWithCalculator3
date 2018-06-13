@@ -65,4 +65,15 @@ public class CustomSet<T> implements Set<T> {
     public ArrayList<T> setEntriesAsList() {
         return setList;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder string = new StringBuilder("{ ");
+
+        for (T element : setList) {
+            string.append(element).append(" ");
+        }
+
+        return string.append("}").toString();
+    }
 }
