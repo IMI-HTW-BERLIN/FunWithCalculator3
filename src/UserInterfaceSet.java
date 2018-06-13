@@ -33,6 +33,7 @@ public class UserInterfaceSet extends UserInterfaceHex {
                 super.toggleMode();
                 break;
             case "Set":
+                super.buttonPanel.setVisible(false);
         }
     }
 }

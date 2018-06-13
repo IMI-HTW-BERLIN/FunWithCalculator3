@@ -17,6 +17,7 @@ public class UserInterface implements ActionListener {
     JFrame frame;
     private JTextField display;
     JButton dotButton;
+    JPanel buttonPanel;
 
     /**
      * Create a user interface.
@@ -52,7 +53,7 @@ public class UserInterface implements ActionListener {
         display = new JTextField();
         contentPane.add(display, BorderLayout.NORTH);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(6, 4));
+        buttonPanel = new JPanel(new GridLayout(6, 4));
         addButton(buttonPanel, "c");
         addButton(buttonPanel, "^");
         addButton(buttonPanel, "(");
