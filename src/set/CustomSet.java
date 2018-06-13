@@ -6,6 +6,13 @@ public class CustomSet<T> implements Set<T> {
 
     private ArrayList<T> setList;
 
+    CustomSet(T... elements) {
+        setList = new ArrayList<>();
+        for (T element : elements) {
+            add(element);
+        }
+    }
+
     CustomSet() {
         setList = new ArrayList<>();
     }
@@ -34,11 +41,7 @@ public class CustomSet<T> implements Set<T> {
     @Override
     public Set combine(Set<T> set) {
         Set<T> temp = null;
-        try {
-            temp = (Set<T>) this.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
+        temp = (Set<T>) this.clone();
 
         for (T element : set.setEntriesAsList()) {
             temp.add(element);
@@ -56,11 +59,7 @@ public class CustomSet<T> implements Set<T> {
     @Override
     public Set subtract(Set<T> set) {
         Set<T> temp = null;
-        try {
-            temp = (Set<T>) this.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
+        temp = (Set<T>) this.clone();
 
         for (T element : set.setEntriesAsList()) {
             temp.remove(element);
@@ -95,5 +94,14 @@ public class CustomSet<T> implements Set<T> {
         }
 
         return string.append("}").toString();
+    }
+
+    @Override
+    protected Object clone() {
+        Set<T> temp = new CustomSet<>();
+        for (T element : setList) {
+            temp.add(element);
+        }
+        return temp;
     }
 }
