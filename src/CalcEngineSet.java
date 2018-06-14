@@ -2,13 +2,15 @@ import set.Set;
 
 public class CalcEngineSet extends CalcEnginePostfix {
 
-    public CalcEngineSet() {
-        super();
-    }
-
     private char operator;
     private Set firstOperand;
     private Set secondOperand;
+    private Set result;
+
+    public CalcEngineSet() {
+        super();
+        result = null;
+    }
 
     void setFirstOperand(Set operand) {
         firstOperand = operand;
@@ -26,17 +28,21 @@ public class CalcEngineSet extends CalcEnginePostfix {
     void equals() {
         switch (operator) {
             case '+':
-                firstOperand.combine(secondOperand);
+                result = firstOperand.combine(secondOperand);
                 break;
             case '-':
-                firstOperand.subtract(secondOperand);
+                result = firstOperand.subtract(secondOperand);
                 break;
             case '∩':
-                firstOperand.intersect(secondOperand);
+                result = firstOperand.intersect(secondOperand);
                 break;
             default:
                 System.err.println("Unknown operator!");
                 break;
         }
+    }
+
+    Set getResult() {
+        return result;
     }
 }
