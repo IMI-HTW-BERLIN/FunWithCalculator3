@@ -122,7 +122,7 @@ public class UserInterfaceSet extends UserInterfaceHex {
         for (String s : setStrings) {
             newSet.add(s.trim());
         }
-        if (!setDuplicate(sets,calc.getResult())) sets.add(newSet);
+        if (!setDuplicate(sets,newSet)) sets.add(newSet);
         updateSetComboBoxes();
     }
 
