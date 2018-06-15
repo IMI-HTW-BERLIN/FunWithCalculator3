@@ -6,14 +6,14 @@ public class CustomSet<T> implements Set<T> {
 
     private ArrayList<T> setList;
 
-    CustomSet(T... elements) {
+    public CustomSet(T... elements) {
         setList = new ArrayList<>();
         for (T element : elements) {
             add(element);
         }
     }
 
-    CustomSet() {
+    public CustomSet() {
         setList = new ArrayList<>();
     }
 
