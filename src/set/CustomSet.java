@@ -29,6 +29,7 @@ public class CustomSet<T> implements Set<T> {
 
     @Override
     public boolean equals(Set<T> set) {
+        if (set.size() != this.size()) return false;
         for (T element : set.setEntriesAsList()) {
             if(!contains(element)) return false;
         }

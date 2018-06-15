@@ -148,7 +148,8 @@ public class UserInterfaceSet extends UserInterfaceHex {
             calc.equals();
             if (!setDuplicate(sets,calc.getResult())) {
                 sets.add(calc.getResult());
-                result.setText("Result" + calc.getResult().toString());
+                result.setText("Result of " + setListLeft.getSelectedItem()+ "\t" + operand.getSelectedItem()+ "\t" +
+                        setListRight.getSelectedItem() + " = "+ calc.getResult().toString());
             }
             else result.setText("Set already exists (" + calc.getResult().toString() + ")");
             updateSetComboBoxes();
