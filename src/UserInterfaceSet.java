@@ -3,73 +3,57 @@ import set.Set;
 import sun.jvm.hotspot.ui.JavaStackTracePanel;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 
-public class UserInterfaceSet extends UserInterfaceHex {
+public class UserInterfaceSet implements ActionListener {
 
-    private JComboBox<String> modeSelector;
+    private CalcEngineSet calc;
+    private JFrame frame;
+
     private JComboBox<Set<String>> setListLeft;
     private JComboBox<Set<String>> setListRight;
     private JComboBox<String> operand;
-    private JLabel result;
-    private JPanel oldContentPane;
+    private JTextField result;
 
     private ArrayList<Set<String>> sets;
 
     UserInterfaceSet(CalcEngineSet engine) {
-        super(engine);
+        calc = engine;
         setUp();
+        makeFrame();
     }
 
     private void setUp() {
-        super.labelDecHexSwitch.setVisible(false);
-        super.buttonDecHexSwitch.setVisible(false);
-
         sets = new ArrayList<>();
         sets.add(new CustomSet<>("1", "2"));
         sets.add(new CustomSet<>("1", "3", "hello"));
-
-        JPanel contentPane = (JPanel) super.frame.getContentPane();
-        modeSelector = new JComboBox<>(new String[]{"Dec", "Hex", "Set"});
-        contentPane.add(modeSelector, BorderLayout.SOUTH);
-        modeSelector.addItemListener(this::itemSelected);
-        super.frame.pack();
-        oldContentPane = (JPanel) frame.getContentPane();
     }
 
-    private void itemSelected(ItemEvent event) {
-        String itemSelected = event.getItem().toString();
-        switch (itemSelected) {
-            case "Dec":
-                super.hexMode = false;
-                super.toggleMode();
-                setView(false);
-                break;
-            case "Hex":
-                super.hexMode = true;
-                super.toggleMode();
-                setView(false);
-                break;
-            case "Set":
-                setView(true);
-        }
-    }
+    private void makeFrame()
+    {
+        frame = new JFrame("AWESOME CALCULATOR 3000!!!");
+        frame.setContentPane(makeSetLayout());
 
-    private void setView(boolean activate) {
-        if (activate) {
-            frame.setContentPane(makeSetLayout());
-            frame.pack();
-        } else {
-            super.toggleMode();
-            oldContentPane.add(modeSelector, BorderLayout.SOUTH);
-            frame.setContentPane(oldContentPane);
-            frame.pack();
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException |
+                InstantiationException |
+                IllegalAccessException |
+                UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
         }
+
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 
     private JPanel makeSetLayout() {
@@ -77,8 +61,9 @@ public class UserInterfaceSet extends UserInterfaceHex {
         setListRight = new JComboBox<>();
         updateSetComboBoxes();
         operand = new JComboBox<>(new String[]{"+", "-", "∩"});
-        result = new JLabel("Result will be displayed here...");
-        result.setAlignmentX(Component.CENTER_ALIGNMENT);
+        result = new JTextField("Result will be displayed here...");
+        result.setHorizontalAlignment(SwingConstants.CENTER);
+        result.setEditable(false);
 
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout(8, 8));
@@ -89,22 +74,16 @@ public class UserInterfaceSet extends UserInterfaceHex {
         calcLayout.add(setListLeft);
         calcLayout.add(operand);
         calcLayout.add(setListRight);
-        addButton(calcLayout, "=");
-
-        JPanel vbox = new JPanel();
-        vbox.setLayout(new BoxLayout(vbox, BoxLayout.Y_AXIS));
-        vbox.add(result);
-
-        vbox.add(Box.createRigidArea(new Dimension(0, 10)));
+        JButton btnEquals = new JButton("=");
+        btnEquals.addActionListener(this);
+        calcLayout.add(btnEquals);
 
         JButton btnCreateSet = new JButton("Create a new set");
         btnCreateSet.addActionListener(e -> createSet());
-        btnCreateSet.setAlignmentX(Component.CENTER_ALIGNMENT);
-        vbox.add(btnCreateSet);
 
         contentPane.add(calcLayout, BorderLayout.NORTH);
-        contentPane.add(vbox, BorderLayout.CENTER);
-        contentPane.add(modeSelector, BorderLayout.SOUTH);
+        contentPane.add(result, BorderLayout.CENTER);
+        contentPane.add(btnCreateSet, BorderLayout.SOUTH);
 
         return contentPane;
     }
@@ -135,8 +114,6 @@ public class UserInterfaceSet extends UserInterfaceHex {
         }
     }
 
-
-    @Override
     public void actionPerformed(ActionEvent event) {
         String command = event.getActionCommand();
         calc.setFirstOperand((Set) setListLeft.getSelectedItem());
@@ -146,7 +123,7 @@ public class UserInterfaceSet extends UserInterfaceHex {
             calc.equals();
             if (!setDuplicate(sets, calc.getResult()))
                 sets.add(calc.getResult());
-            result.setText("Result of " + setListLeft.getSelectedItem() + "\t" + operand.getSelectedItem() + "\t" +
+            result.setText("Result of " + setListLeft.getSelectedItem() + " " + operand.getSelectedItem() + " " +
                     setListRight.getSelectedItem() + " = " + calc.getResult().toString());
             updateSetComboBoxes();
         }
