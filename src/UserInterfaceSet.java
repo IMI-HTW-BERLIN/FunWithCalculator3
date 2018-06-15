@@ -1,8 +1,10 @@
 import set.CustomSet;
 import set.Set;
+import sun.jvm.hotspot.ui.JavaStackTracePanel;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -30,10 +32,10 @@ public class UserInterfaceSet extends UserInterfaceHex {
 
         sets = new ArrayList<>();
         sets.add(new CustomSet<>("1", "2"));
-        sets.add(new CustomSet<>("1","3","hello"));
+        sets.add(new CustomSet<>("1", "3", "hello"));
 
         JPanel contentPane = (JPanel) super.frame.getContentPane();
-        modeSelector = new JComboBox<>(new String[] {"Dec", "Hex", "Set"});
+        modeSelector = new JComboBox<>(new String[]{"Dec", "Hex", "Set"});
         contentPane.add(modeSelector, BorderLayout.SOUTH);
         modeSelector.addItemListener(this::itemSelected);
         super.frame.pack();
@@ -58,7 +60,7 @@ public class UserInterfaceSet extends UserInterfaceHex {
         }
     }
 
-    private void setView (boolean activate) {
+    private void setView(boolean activate) {
         if (activate) {
             frame.setContentPane(makeSetLayout());
             frame.pack();
@@ -71,41 +73,37 @@ public class UserInterfaceSet extends UserInterfaceHex {
     }
 
     private JPanel makeSetLayout() {
-        setListLeft = new JComboBox<>() ;
+        setListLeft = new JComboBox<>();
         setListRight = new JComboBox<>();
         updateSetComboBoxes();
         operand = new JComboBox<>(new String[]{"+", "-", "∩"});
         result = new JLabel("Result will be displayed here...");
+        result.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout(8, 8));
-        contentPane.setBorder(new EmptyBorder( 10, 10, 10, 10));
+        contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        JPanel layout = new JPanel(new GridLayout(4, 4));
+        JPanel calcLayout = new JPanel(new GridLayout(1, 4));
 
-        layout.add(setListLeft);
-        layout.add(operand);
-        layout.add(setListRight);
-        addButton(layout, "=");
+        calcLayout.add(setListLeft);
+        calcLayout.add(operand);
+        calcLayout.add(setListRight);
+        addButton(calcLayout, "=");
 
-        layout.add(result);
-        layout.add(new JLabel());
-        layout.add(new JLabel());
-        layout.add(new JLabel());
+        JPanel vbox = new JPanel();
+        vbox.setLayout(new BoxLayout(vbox, BoxLayout.Y_AXIS));
+        vbox.add(result);
 
-        layout.add(new JLabel("Create new Set:"));
-        layout.add(new JLabel());
-        layout.add(new JLabel());
-        layout.add(new JLabel());
+        vbox.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        JButton btnCreateSet = new JButton("Create");
+        JButton btnCreateSet = new JButton("Create a new set");
         btnCreateSet.addActionListener(e -> createSet());
-        layout.add(btnCreateSet);
-        layout.add(new JLabel(""));
+        btnCreateSet.setAlignmentX(Component.CENTER_ALIGNMENT);
+        vbox.add(btnCreateSet);
 
-        layout.setPreferredSize(new Dimension(1000,100));
-
-        contentPane.add(layout, BorderLayout.NORTH);
+        contentPane.add(calcLayout, BorderLayout.NORTH);
+        contentPane.add(vbox, BorderLayout.CENTER);
         contentPane.add(modeSelector, BorderLayout.SOUTH);
 
         return contentPane;
@@ -122,7 +120,7 @@ public class UserInterfaceSet extends UserInterfaceHex {
         for (String s : setStrings) {
             newSet.add(s.trim());
         }
-        if (!setDuplicate(sets,newSet)) sets.add(newSet);
+        if (!setDuplicate(sets, newSet)) sets.add(newSet);
         else result.setText("Set already exists (" + calc.getResult().toString() + ")");
         updateSetComboBoxes();
     }
@@ -139,29 +137,27 @@ public class UserInterfaceSet extends UserInterfaceHex {
 
 
     @Override
-    public void actionPerformed (ActionEvent event) {
+    public void actionPerformed(ActionEvent event) {
         String command = event.getActionCommand();
         calc.setFirstOperand((Set) setListLeft.getSelectedItem());
         calc.setSecondOperand((Set) setListRight.getSelectedItem());
         calc.setOperator((operand.getSelectedItem().toString()).charAt(0));
         if (command.equals("=")) {
             calc.equals();
-            if (!setDuplicate(sets,calc.getResult())) {
+            if (!setDuplicate(sets, calc.getResult()))
                 sets.add(calc.getResult());
-                result.setText("Result of " + setListLeft.getSelectedItem()+ "\t" + operand.getSelectedItem()+ "\t" +
-                        setListRight.getSelectedItem() + " = "+ calc.getResult().toString());
-            }
-            else result.setText("Set already exists (" + calc.getResult().toString() + ")");
+            result.setText("Result of " + setListLeft.getSelectedItem() + "\t" + operand.getSelectedItem() + "\t" +
+                    setListRight.getSelectedItem() + " = " + calc.getResult().toString());
             updateSetComboBoxes();
         }
 
-     }
+    }
 
-     private boolean setDuplicate(ArrayList<Set<String>> arraySet, Set set) {
+    private boolean setDuplicate(ArrayList<Set<String>> arraySet, Set set) {
         for (Set setElement : arraySet) {
-            if(setElement.equals(set)) return true;
+            if (setElement.equals(set)) return true;
         }
         return false;
-     }
+    }
 
 }
