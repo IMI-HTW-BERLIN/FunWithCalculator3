@@ -123,6 +123,7 @@ public class UserInterfaceSet extends UserInterfaceHex {
             newSet.add(s.trim());
         }
         if (!setDuplicate(sets,newSet)) sets.add(newSet);
+        else result.setText("Set already exists (" + calc.getResult().toString() + ")");
         updateSetComboBoxes();
     }
 
@@ -145,9 +146,12 @@ public class UserInterfaceSet extends UserInterfaceHex {
         calc.setOperator((operand.getSelectedItem().toString()).charAt(0));
         if (command.equals("=")) {
             calc.equals();
-            if (!setDuplicate(sets,calc.getResult())) sets.add(calc.getResult());
+            if (!setDuplicate(sets,calc.getResult())) {
+                sets.add(calc.getResult());
+                result.setText("Result" + calc.getResult().toString());
+            }
+            else result.setText("Set already exists (" + calc.getResult().toString() + ")");
             updateSetComboBoxes();
-            result.setText("Result: " + calc.getResult().toString());
         }
 
      }
