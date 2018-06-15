@@ -99,10 +99,13 @@ public class CustomSet<T> implements Set<T> {
         StringBuilder string = new StringBuilder("{ ");
 
         for (T element : setList) {
-            string.append(element).append(" ");
+            string.append(element).append(", ");
         }
 
-        return string.append("}").toString();
+        String setString = string.toString();
+        setString = setString.replaceAll(", $", " ");
+
+        return setString + "}";
     }
 
     @Override
