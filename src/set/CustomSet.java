@@ -28,6 +28,14 @@ public class CustomSet<T> implements Set<T> {
     }
 
     @Override
+    public boolean equals(Set<T> set) {
+        for (T element : set.setEntriesAsList()) {
+            if(!contains(element)) return false;
+        }
+        return true;
+    }
+
+    @Override
     public int size() {
         return setList.size();
     }

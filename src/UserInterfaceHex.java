@@ -18,7 +18,7 @@ public class UserInterfaceHex extends UserInterface {
      *
      * @param engine The calculator engine.
      */
-    UserInterfaceHex(CalcEnginePostfix engine) {
+    UserInterfaceHex(CalcEngineSet engine) {
         super(engine);
         makeHexFrame();
         hexMode = false;

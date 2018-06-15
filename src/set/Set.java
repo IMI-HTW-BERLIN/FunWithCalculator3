@@ -8,6 +8,8 @@ public interface Set<T> {
 
     boolean contains(T element);
 
+    boolean equals(Set<T> set);
+
     int size();
 
     void add(T element);

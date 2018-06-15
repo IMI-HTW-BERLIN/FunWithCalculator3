@@ -4,19 +4,22 @@ import set.Set;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 
 public class UserInterfaceSet extends UserInterfaceHex {
 
     private JComboBox<String> modeSelector;
-    private JComboBox<Set<String>> setList1;
-    private JComboBox<Set<String>> setList2;
+    private JComboBox<Set<String>> setListLeft;
+    private JComboBox<Set<String>> setListRight;
+    private JComboBox<String> operand;
+    private JLabel result;
     private JPanel oldContentPane;
 
     private ArrayList<Set<String>> sets;
 
-    UserInterfaceSet(CalcEnginePostfix engine) {
+    UserInterfaceSet(CalcEngineSet engine) {
         super(engine);
         setUp();
     }
@@ -27,7 +30,7 @@ public class UserInterfaceSet extends UserInterfaceHex {
 
         sets = new ArrayList<>();
         sets.add(new CustomSet<>("1", "2"));
-        sets.add(new CustomSet<>("1"));
+        sets.add(new CustomSet<>("1","3","hello"));
 
         JPanel contentPane = (JPanel) super.frame.getContentPane();
         modeSelector = new JComboBox<>(new String[] {"Dec", "Hex", "Set"});
@@ -41,44 +44,68 @@ public class UserInterfaceSet extends UserInterfaceHex {
         String itemSelected = event.getItem().toString();
         switch (itemSelected) {
             case "Dec":
-                super.hexMode = true;
-                super.toggleMode();
-                super.buttonPanel.setVisible(true);
-                break;
-            case "Hex":
                 super.hexMode = false;
                 super.toggleMode();
-                super.buttonPanel.setVisible(true);
+                setView(false);
+                break;
+            case "Hex":
+                super.hexMode = true;
+                super.toggleMode();
+                setView(false);
                 break;
             case "Set":
-                frame.setContentPane(makeSetButtons());
-                frame.pack();
-                break;
+                setView(true);
         }
     }
 
-    private JPanel makeSetButtons() {
-        setList1 = new JComboBox<>();
-        setList2 = new JComboBox<>();
+    private void setView (boolean activate) {
+        if (activate) {
+            frame.setContentPane(makeSetLayout());
+            frame.pack();
+        } else {
+            super.toggleMode();
+            oldContentPane.add(modeSelector, BorderLayout.SOUTH);
+            frame.setContentPane(oldContentPane);
+            frame.pack();
+        }
+    }
+
+    private JPanel makeSetLayout() {
+        setListLeft = new JComboBox<>() ;
+        setListRight = new JComboBox<>();
         updateSetComboBoxes();
+        operand = new JComboBox<>(new String[]{"+", "-", "∩"});
+        result = new JLabel("Result will be displayed here...");
 
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout(8, 8));
         contentPane.setBorder(new EmptyBorder( 10, 10, 10, 10));
 
-        buttonPanel = new JPanel(new GridLayout(2, 3));
+        JPanel layout = new JPanel(new GridLayout(4, 4));
 
-        buttonPanel.add(setList1);
-        addButton(buttonPanel, "+");
-        buttonPanel.add(setList2);
+        layout.add(setListLeft);
+        layout.add(operand);
+        layout.add(setListRight);
+        addButton(layout, "=");
 
-        buttonPanel.add(new JLabel("Create new Set:"));
+        layout.add(result);
+        layout.add(new JLabel());
+        layout.add(new JLabel());
+        layout.add(new JLabel());
+
+        layout.add(new JLabel("Create new Set:"));
+        layout.add(new JLabel());
+        layout.add(new JLabel());
+        layout.add(new JLabel());
+
         JButton btnCreateSet = new JButton("Create");
         btnCreateSet.addActionListener(e -> createSet());
-        buttonPanel.add(btnCreateSet);
-        buttonPanel.add(new JLabel(""));
+        layout.add(btnCreateSet);
+        layout.add(new JLabel(""));
 
-        contentPane.add(buttonPanel);
+        layout.setPreferredSize(new Dimension(1000,100));
+
+        contentPane.add(layout, BorderLayout.NORTH);
         contentPane.add(modeSelector, BorderLayout.SOUTH);
 
         return contentPane;
@@ -89,24 +116,47 @@ public class UserInterfaceSet extends UserInterfaceHex {
         Object[] dialogItems = {"Enter the new set:", setInput, "(e.g. \"13, Hello, 4.2, abcdef\")"};
         JOptionPane.showMessageDialog(frame, dialogItems, "Create a new set", JOptionPane.PLAIN_MESSAGE);
 
-        String[] setStrings = setInput.getText().split(",");
+        String[] setStrings = setInput.getText().split("[ ]*,[ ]*");
         Set<String> newSet = new CustomSet<>();
 
         for (String s : setStrings) {
             newSet.add(s.trim());
         }
-
-        sets.add(newSet);
+        if (!sets.contains(newSet)) sets.add(newSet);
         updateSetComboBoxes();
     }
 
     private void updateSetComboBoxes() {
-        setList1.removeAllItems();
-        setList2.removeAllItems();
+        setListLeft.removeAllItems();
+        setListRight.removeAllItems();
 
         for (Set set : sets) {
-            setList1.addItem(set);
-            setList2.addItem(set);
+            setListRight.addItem(set);
+            setListLeft.addItem(set);
         }
     }
+
+
+    @Override
+    public void actionPerformed (ActionEvent event) {
+        String command = event.getActionCommand();
+        calc.setFirstOperand((Set) setListLeft.getSelectedItem());
+        calc.setSecondOperand((Set) setListRight.getSelectedItem());
+        calc.setOperator((operand.getSelectedItem().toString()).charAt(0));
+        if (command.equals("=")) {
+            calc.equals();
+            if (!setDuplicate(sets,calc.getResult())) sets.add(calc.getResult());
+            updateSetComboBoxes();
+            result.setText("Result: " + calc.getResult().toString());
+        }
+
+     }
+
+     private boolean setDuplicate(ArrayList<Set<String>> arraySet, Set set) {
+        for (Set setElement : arraySet) {
+            if(setElement.equals(set)) return true;
+        }
+        return false;
+     }
+
 }

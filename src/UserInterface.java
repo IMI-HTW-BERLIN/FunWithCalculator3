@@ -12,7 +12,7 @@ import javax.swing.border.*;
  * @version 2018.05.24
  */
 public class UserInterface implements ActionListener {
-    CalcEnginePostfix calc;
+    CalcEngineSet calc;
 
     JFrame frame;
     private JTextField display;
@@ -23,7 +23,7 @@ public class UserInterface implements ActionListener {
      * Create a user interface.
      * @param engine The calculator engine.
      */
-    UserInterface(CalcEnginePostfix engine)
+    UserInterface(CalcEngineSet engine)
     {
         calc = engine;
         makeFrame();

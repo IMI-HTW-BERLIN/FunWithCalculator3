@@ -15,7 +15,7 @@ public class Calculator
      */
     private Calculator()
     {
-        CalcEnginePostfix engine = new CalcEnginePostfix();
+        CalcEngineSet engine = new CalcEngineSet();
         new UserInterfaceSet(engine);
     }
 }
