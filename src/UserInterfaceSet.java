@@ -1,15 +1,11 @@
 import set.CustomSet;
 import set.Set;
-import sun.jvm.hotspot.ui.JavaStackTracePanel;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 
 public class UserInterfaceSet implements ActionListener {
@@ -19,7 +15,7 @@ public class UserInterfaceSet implements ActionListener {
 
     private JComboBox<Set<String>> setListLeft;
     private JComboBox<Set<String>> setListRight;
-    private JComboBox<String> operand;
+    private JComboBox<Character> operand;
     private JTextField result;
 
     private ArrayList<Set<String>> sets;
@@ -60,7 +56,7 @@ public class UserInterfaceSet implements ActionListener {
         setListLeft = new JComboBox<>();
         setListRight = new JComboBox<>();
         updateSetComboBoxes();
-        operand = new JComboBox<>(new String[]{"+", "-", "∩"});
+        operand = new JComboBox<>(new Character[]{'+', '-', '∩'});
         result = new JTextField("Result will be displayed here...");
         result.setHorizontalAlignment(SwingConstants.CENTER);
         result.setEditable(false);
@@ -99,8 +95,10 @@ public class UserInterfaceSet implements ActionListener {
         for (String s : setStrings) {
             newSet.add(s.trim());
         }
-        if (!setDuplicate(sets, newSet)) sets.add(newSet);
-        else result.setText("Set already exists (" + calc.getResult().toString() + ")");
+        if (setDuplicate(sets, newSet))
+            result.setText("Set already exists (" + calc.getResult().toString() + ")");
+        else
+            sets.add(newSet);
         updateSetComboBoxes();
     }
 
@@ -108,7 +106,7 @@ public class UserInterfaceSet implements ActionListener {
         setListLeft.removeAllItems();
         setListRight.removeAllItems();
 
-        for (Set set : sets) {
+        for (Set<String> set : sets) {
             setListRight.addItem(set);
             setListLeft.addItem(set);
         }
@@ -118,7 +116,7 @@ public class UserInterfaceSet implements ActionListener {
         String command = event.getActionCommand();
         calc.setFirstOperand((Set) setListLeft.getSelectedItem());
         calc.setSecondOperand((Set) setListRight.getSelectedItem());
-        calc.setOperator((operand.getSelectedItem().toString()).charAt(0));
+        calc.setOperator((char)(operand.getSelectedItem()));
         if (command.equals("=")) {
             calc.equals();
             if (!setDuplicate(sets, calc.getResult()))
@@ -130,8 +128,8 @@ public class UserInterfaceSet implements ActionListener {
 
     }
 
-    private boolean setDuplicate(ArrayList<Set<String>> arraySet, Set set) {
-        for (Set setElement : arraySet) {
+    private boolean setDuplicate(ArrayList<Set<String>> arraySet, Set<String> set) {
+        for (Set<String> setElement : arraySet) {
             if (setElement.equals(set)) return true;
         }
         return false;
