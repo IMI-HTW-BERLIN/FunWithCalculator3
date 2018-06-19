@@ -8,7 +8,6 @@ public class CalcEngineSet {
     private Set result;
 
     public CalcEngineSet() {
-        super();
         result = null;
     }
 
