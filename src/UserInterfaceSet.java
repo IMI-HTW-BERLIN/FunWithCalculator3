@@ -89,7 +89,7 @@ public class UserInterfaceSet implements ActionListener {
         Object[] dialogItems = {"Enter the new set:", setInput, "(e.g. \"13, Hello, 4.2, abcdef\")"};
         JOptionPane.showMessageDialog(frame, dialogItems, "Create a new set", JOptionPane.PLAIN_MESSAGE);
 
-        String[] setStrings = setInput.getText().split("[ ]*,[ ]*");
+        String[] setStrings = setInput.getText().split(",");
         Set<String> newSet = new CustomSet<>();
 
         for (String s : setStrings) {
