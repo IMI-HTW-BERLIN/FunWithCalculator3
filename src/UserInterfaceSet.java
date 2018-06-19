@@ -96,7 +96,7 @@ public class UserInterfaceSet implements ActionListener {
             newSet.add(s.trim());
         }
         if (setDuplicate(sets, newSet))
-            result.setText("Set already exists (" + calc.getResult().toString() + ")");
+            result.setText("Set already exists: " + newSet.toString());
         else
             sets.add(newSet);
         updateSetComboBoxes();
