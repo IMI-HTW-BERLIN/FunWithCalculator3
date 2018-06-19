@@ -1,6 +1,6 @@
 import set.Set;
 
-public class CalcEngineSet extends CalcEnginePostfix {
+public class CalcEngineSet {
 
     private char operator;
     private Set firstOperand;
@@ -24,7 +24,6 @@ public class CalcEngineSet extends CalcEnginePostfix {
         this.operator = operator;
     }
 
-    @Override
     void equals() {
         switch (operator) {
             case '+':
